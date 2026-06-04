@@ -1,0 +1,19 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const slug = post.id.replace(/\.(md|mdx)$/, '');
+---
+
+<article class="post-card">
+  <span class="post-meta">{post.data.date.toLocaleDateString('zh-CN')}</span>
+  <h2><a href={`/blog/${slug}`}>{post.data.title}</a></h2>
+  <p>{post.data.description}</p>
+  <div class="tags">
+    {post.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+  </div>
+</article>

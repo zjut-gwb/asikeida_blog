@@ -1,0 +1,48 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const siteName = 'Asikeida Blog';
+const { title, description = '记录技术、项目与长期思考。' } = Astro.props;
+const pageTitle = title === siteName ? title : `${title} | ${siteName}`;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate" type="application/rss+xml" title={siteName} href="/rss.xml" />
+    <title>{pageTitle}</title>
+  </head>
+  <body>
+    <div class="site-shell">
+      <header class="site-header">
+        <a class="brand" href="/" aria-label="返回首页">
+          <span class="brand-mark">A</span>
+          <span>{siteName}</span>
+        </a>
+        <nav class="site-nav" aria-label="主导航">
+          <a href="/blog">文章</a>
+          <a href="/about">关于</a>
+          <a href="/rss.xml">RSS</a>
+        </nav>
+      </header>
+
+      <main class="site-main">
+        <slot />
+      </main>
+
+      <footer class="site-footer">
+        <p>© {new Date().getFullYear()} Asikeida Blog. Built with Astro.</p>
+      </footer>
+    </div>
+  </body>
+</html>

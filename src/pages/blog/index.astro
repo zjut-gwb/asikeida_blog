@@ -1,0 +1,21 @@
+---
+import { getCollection } from 'astro:content';
+import PostCard from '../../components/PostCard.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const posts = (await getCollection('blog'))
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<BaseLayout title="文章" description="Asikeida Blog 的全部文章。">
+  <section>
+    <span class="eyebrow">Articles</span>
+    <h1 class="page-title">全部文章</h1>
+    <p class="page-description">按时间倒序整理技术学习、工程实践和项目复盘。</p>
+  </section>
+
+  <section class="post-list">
+    {posts.map((post) => <PostCard post={post} />)}
+  </section>
+</BaseLayout>
