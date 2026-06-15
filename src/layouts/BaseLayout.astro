@@ -20,6 +20,17 @@ const pageTitle = title === siteName ? title : `${title} | ${siteName}`;
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="alternate" type="application/rss+xml" title={siteName} href="/rss.xml" />
+    <script is:inline>
+      (() => {
+        try {
+          const savedTheme = localStorage.getItem('theme');
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          document.documentElement.dataset.theme = savedTheme || (prefersDark ? 'dark' : 'light');
+        } catch {
+          document.documentElement.dataset.theme = 'light';
+        }
+      })();
+    </script>
     <title>{pageTitle}</title>
   </head>
   <body>
@@ -33,6 +44,10 @@ const pageTitle = title === siteName ? title : `${title} | ${siteName}`;
           <a href="/blog">文章</a>
           <a href="/about">关于</a>
           <a href="/rss.xml">RSS</a>
+          <button class="theme-toggle" type="button" aria-label="切换深色模式" data-theme-toggle>
+            <span class="theme-toggle-icon" aria-hidden="true"></span>
+            <span data-theme-label>主题</span>
+          </button>
         </nav>
       </header>
 
@@ -44,5 +59,31 @@ const pageTitle = title === siteName ? title : `${title} | ${siteName}`;
         <p>© {new Date().getFullYear()} Asikeida Blog. Built with Astro.</p>
       </footer>
     </div>
+    <script is:inline>
+      (() => {
+        const button = document.querySelector('[data-theme-toggle]');
+        const label = document.querySelector('[data-theme-label]');
+
+        if (!button || !label) return;
+
+        const applyTheme = (theme) => {
+          document.documentElement.dataset.theme = theme;
+          button.setAttribute('aria-label', theme === 'dark' ? '切换浅色模式' : '切换深色模式');
+          label.textContent = theme === 'dark' ? '深色' : '浅色';
+        };
+
+        applyTheme(document.documentElement.dataset.theme || 'light');
+
+        button.addEventListener('click', () => {
+          const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+          try {
+            localStorage.setItem('theme', nextTheme);
+          } catch {
+            // Ignore storage failures and keep the in-page theme switch working.
+          }
+          applyTheme(nextTheme);
+        });
+      })();
+    </script>
   </body>
 </html>
